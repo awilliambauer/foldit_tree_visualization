@@ -120,8 +120,8 @@ def recurse_print_tree(node, depth):
         recurse_print_tree(child, depth + 1)
 
 
-def format_mrid(mrid):
-    return mrid_to_mid[mrid] if mrid in mrid_to_mid else "*{}*".format(mrid)
+# def format_mrid(mrid):
+#     return mrid_to_mid[mrid] if mrid in mrid_to_mid else "*{}*".format(mrid)
 
 
 def output_tree_helper(node, dot, uid_to_cluster, depth, nodes, minE, maxE, minT, maxT, node_to_color=None):
@@ -135,11 +135,11 @@ def output_tree_helper(node, dot, uid_to_cluster, depth, nodes, minE, maxE, minT
             fill_color = node_to_color(node)
         else:
             fill_color = interpolate_values_color(-node.data['energy'], minE, maxE, BAD_COLOR, GOOD_COLOR)
-            label = "\n".join(["{} {}".format(format_mrid(k), v) for k, v in node.get_new_macros().items()])
-            if node.has_manual_action():
-                if len(label) > 0:
-                    label += "\n"
-                label += "MANUAL"
+            # label = "\n".join(["{} {}".format(format_mrid(k), v) for k, v in node.get_new_macros().items()])
+            # if node.has_manual_action():
+            #     if len(label) > 0:
+            #         label += "\n"
+            #     label += "MANUAL"
         tt = str(node.data['energy'])
         nodes.append(node)
     if hasattr(node, 'cascade'):
@@ -318,7 +318,6 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(prog='make_tree_viz.py')
     parser.add_argument('--viz', action='store_true')
-    parser.add_argument('-L', '--load-raw', action='store_true')
     parser.add_argument('-E', '--evolver', action='store_true')
     parser.add_argument('--uid')
     parser.add_argument("ranks_file")
@@ -330,26 +329,26 @@ if __name__ == "__main__":
 
     puzzles = get_ranks(args.ranks_file)
 
-    print("loading macro data")
-    with open("data/macro_families.json") as fp:
-        macro_families = [frozenset(f) for f in json.load(fp)]
-    with open("data/rprp_macros.csv") as fp:
-        mrid_to_mid_raw = []
-        mrid_to_shared_raw = []
-        for row in csv.DictReader(fp):
-            mrid_to_mid_raw.append((row['mrid'], row['mid']))
-            mrid_to_shared_raw.append((row['mrid'], row['shared']))
-    with open('data/rprp_macro_revisions.csv') as fp:
-        c = csv.DictReader(fp)
-        revisions = {row['mrid']: row for row in c}
-    prelim = dict(mrid_to_mid_raw)
-    mrid_to_mid_raw.extend((k, v['mid']) for k, v in revisions.items() if k not in prelim)
-    prelim = dict(mrid_to_shared_raw)
-    mrid_to_shared_raw.extend((k, v['shared']) for k, v in revisions.items() if k not in prelim)
-    mrid_to_mid = dict(mrid_to_mid_raw)
-    mrid_to_shared = dict(mrid_to_shared_raw)
-    mid_to_mrid = {k: list(map(itemgetter(0), g)) for k, g in
-                   groupby(sorted(mrid_to_mid.items(), key=itemgetter(1)), itemgetter(1))}
+    # print("loading macro data")
+    # with open("data/macro_families.json") as fp:
+    #     macro_families = [frozenset(f) for f in json.load(fp)]
+    # with open("data/rprp_macros.csv") as fp:
+    #     mrid_to_mid_raw = []
+    #     mrid_to_shared_raw = []
+    #     for row in csv.DictReader(fp):
+    #         mrid_to_mid_raw.append((row['mrid'], row['mid']))
+    #         mrid_to_shared_raw.append((row['mrid'], row['shared']))
+    # with open('data/rprp_macro_revisions.csv') as fp:
+    #     c = csv.DictReader(fp)
+    #     revisions = {row['mrid']: row for row in c}
+    # prelim = dict(mrid_to_mid_raw)
+    # mrid_to_mid_raw.extend((k, v['mid']) for k, v in revisions.items() if k not in prelim)
+    # prelim = dict(mrid_to_shared_raw)
+    # mrid_to_shared_raw.extend((k, v['shared']) for k, v in revisions.items() if k not in prelim)
+    # mrid_to_mid = dict(mrid_to_mid_raw)
+    # mrid_to_shared = dict(mrid_to_shared_raw)
+    # mid_to_mrid = {k: list(map(itemgetter(0), g)) for k, g in
+    #                groupby(sorted(mrid_to_mid.items(), key=itemgetter(1)), itemgetter(1))}
 
     for pid in args.pids:
         print("puzzle {}".format(pid))
